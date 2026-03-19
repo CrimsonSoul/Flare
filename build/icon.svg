@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Dark rounded background -->
+  <rect width="512" height="512" rx="96" fill="#0c0e12"/>
+
+  <!-- Amber warning triangle with consistent rounded joins -->
+  <path d="M256 88 L444 412 Q448 428 432 428 L80 428 Q64 428 68 412 Z"
+        fill="none" stroke="#f59e0b" stroke-width="28"
+        stroke-linejoin="round" stroke-linecap="round"/>
+
+  <!-- Flame (replaces exclamation bar) -->
+  <path d="M256 170
+           C256 170 292 214 292 252
+           C292 267 287 278 280 285
+           C280 262 268 247 256 237
+           C244 247 232 262 232 285
+           C225 278 220 267 220 252
+           C220 214 256 170 256 170Z"
+        fill="#f59e0b"/>
+
+  <!-- Flame inner highlight -->
+  <path d="M256 204
+           C256 204 270 222 270 238
+           C270 247 268 253 264 257
+           C263 247 259 241 256 238
+           C253 241 249 247 248 257
+           C244 253 242 247 242 238
+           C242 222 256 204 256 204Z"
+        fill="#fde68a" opacity="0.85"/>
+
+  <!-- Dot (exclamation-style, at base of triangle) -->
+  <circle cx="256" cy="382" r="18" fill="#f59e0b"/>
+</svg>
