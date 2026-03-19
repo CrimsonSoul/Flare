@@ -8,7 +8,7 @@
         stroke-linejoin="round" stroke-linecap="round"/>
 
   <!-- Exclamation bar (top) -->
-  <rect x="242" y="148" width="28" height="140" rx="14" fill="#f59e0b"/>
+  <rect x="242" y="172" width="28" height="116" rx="14" fill="#f59e0b"/>
 
   <!-- Flame (flipped — tip points down, flares at top) -->
   <path d="M256 390
