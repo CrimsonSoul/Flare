@@ -1,6 +1,5 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 import { setupMaintenanceTasks } from './maintenanceTasks';
-import { FileManager } from '../FileManager';
 
 vi.mock('../logger', () => ({
   loggers: {
@@ -10,10 +9,6 @@ vi.mock('../logger', () => ({
       error: vi.fn(),
     },
   },
-}));
-
-vi.mock('../FileManager', () => ({
-  FileManager: vi.fn(),
 }));
 
 import { loggers } from '../logger';
@@ -29,8 +24,7 @@ describe('maintenanceTasks', () => {
   });
 
   it('returns a cleanup function', () => {
-    const getFileManager = vi.fn(() => null);
-    const cleanup = setupMaintenanceTasks(getFileManager);
+    const cleanup = setupMaintenanceTasks();
     expect(typeof cleanup).toBe('function');
     cleanup();
   });
@@ -39,8 +33,7 @@ describe('maintenanceTasks', () => {
     const clearIntervalSpy = vi.spyOn(globalThis, 'clearInterval');
     const clearTimeoutSpy = vi.spyOn(globalThis, 'clearTimeout');
 
-    const getFileManager = vi.fn(() => null);
-    const cleanup = setupMaintenanceTasks(getFileManager);
+    const cleanup = setupMaintenanceTasks();
     cleanup();
 
     expect(clearIntervalSpy).toHaveBeenCalled();
@@ -48,42 +41,25 @@ describe('maintenanceTasks', () => {
   });
 
   it('logs startup memory stats after 1 minute timeout', () => {
-    const getFileManager = vi.fn(() => null);
-    setupMaintenanceTasks(getFileManager);
+    setupMaintenanceTasks();
 
     vi.advanceTimersByTime(60000);
     expect(loggers.main.info).toHaveBeenCalledWith('Startup Memory Stats:', expect.any(Object));
   });
 
   it('runs periodic maintenance at 24-hour interval', () => {
-    const mockFileManager = {
-      performBackup: vi.fn(async () => undefined),
-    } as unknown as FileManager;
-
-    const getFileManager = vi.fn(() => mockFileManager);
-    setupMaintenanceTasks(getFileManager);
+    setupMaintenanceTasks();
 
     vi.advanceTimersByTime(24 * 60 * 60 * 1000);
     expect(loggers.main.info).toHaveBeenCalledWith('Running periodic maintenance...');
     expect(loggers.main.info).toHaveBeenCalledWith('Memory Stats:', expect.any(Object));
-    expect(mockFileManager.performBackup).toHaveBeenCalledWith('periodic');
-  });
-
-  it('skips backup when fileManager is null during interval', () => {
-    const getFileManager = vi.fn(() => null);
-    setupMaintenanceTasks(getFileManager);
-
-    vi.advanceTimersByTime(24 * 60 * 60 * 1000);
-    expect(loggers.main.info).toHaveBeenCalledWith('Running periodic maintenance...');
-    // No crash expected
   });
 
   it('triggers GC if available on globalThis', () => {
     const gcMock = vi.fn();
     (globalThis as { gc?: () => void }).gc = gcMock;
 
-    const getFileManager = vi.fn(() => null);
-    setupMaintenanceTasks(getFileManager);
+    setupMaintenanceTasks();
 
     vi.advanceTimersByTime(24 * 60 * 60 * 1000);
     expect(gcMock).toHaveBeenCalled();
@@ -98,8 +74,7 @@ describe('maintenanceTasks', () => {
     });
     (globalThis as { gc?: () => void }).gc = gcMock;
 
-    const getFileManager = vi.fn(() => null);
-    setupMaintenanceTasks(getFileManager);
+    setupMaintenanceTasks();
 
     vi.advanceTimersByTime(24 * 60 * 60 * 1000);
     expect(loggers.main.warn).toHaveBeenCalledWith(
@@ -111,8 +86,7 @@ describe('maintenanceTasks', () => {
   });
 
   it('does not run interval tasks before 24 hours', () => {
-    const getFileManager = vi.fn(() => null);
-    setupMaintenanceTasks(getFileManager);
+    setupMaintenanceTasks();
 
     vi.advanceTimersByTime(23 * 60 * 60 * 1000);
     expect(loggers.main.info).not.toHaveBeenCalledWith('Running periodic maintenance...');

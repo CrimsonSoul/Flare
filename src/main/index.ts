@@ -1,14 +1,13 @@
 import { app, BrowserWindow, session, dialog, Menu } from 'electron';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { FileManager } from './FileManager';
 import { loggers } from './logger';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 import { validateEnv } from './env';
-import { state, getDataRoot, getBundledDataPath, setupIpc, setupPermissions } from './app/appState';
+import { state, getDataRoot, setupIpc, setupPermissions } from './app/appState';
 import { setupMaintenanceTasks } from './app/maintenanceTasks';
 import { setupWindowListeners } from './handlers/windowHandlers';
 
@@ -120,15 +119,12 @@ if (gotLock) {
       });
     });
 
-    // Initialize data BEFORE loading the renderer so IPC handlers have
-    // a ready FileManager when the renderer starts making requests.
+    // Initialize data root before loading the renderer so IPC handlers
+    // have a valid path when the renderer starts making requests.
     loggers.main.info('Starting data initialization...');
     try {
       state.currentDataRoot = await getDataRoot();
       loggers.main.info('Data root:', { path: state.currentDataRoot });
-      state.fileManager = new FileManager(state.currentDataRoot, getBundledDataPath());
-      state.fileManager.init();
-      loggers.main.info('FileManager initialized successfully');
     } catch (error) {
       loggers.main.error('Failed to initialize data', { error });
     }
@@ -220,10 +216,6 @@ if (gotLock) {
 
     state.mainWindow.on('closed', () => {
       state.mainWindow = null;
-      if (state.fileManager) {
-        state.fileManager.destroy();
-        state.fileManager = null;
-      }
     });
   }
 
@@ -241,14 +233,10 @@ if (gotLock) {
       await createWindow();
       const cleanupMaintenance = setupMaintenanceTasks();
 
-      // Graceful shutdown: clean up file watchers, timers, etc.
+      // Graceful shutdown: clean up timers, etc.
       app.on('before-quit', () => {
         loggers.main.info('App quitting — cleaning up resources');
         cleanupMaintenance();
-        if (state.fileManager) {
-          state.fileManager.destroy();
-          state.fileManager = null;
-        }
       });
 
       app.on('activate', () => {

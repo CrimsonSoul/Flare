@@ -1,6 +1,5 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { useFocusTrap } from '../hooks/useFocusTrap';
 import { Tooltip } from './Tooltip';
 
 type Props = {
@@ -30,8 +29,7 @@ export const Modal: React.FC<Props> = ({
   dialogClassName = 'modal-dialog-generic',
   dialogProps,
 }) => {
-  // Focus trap to prevent focus from leaving modal
-  const focusTrapRef = useFocusTrap<HTMLDialogElement>(isOpen);
+  const focusTrapRef = useRef<HTMLDialogElement>(null);
 
   // Handle Escape key to close modal
   const handleKeyDown = useCallback(

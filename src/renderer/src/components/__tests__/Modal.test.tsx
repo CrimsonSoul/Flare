@@ -3,11 +3,6 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { Modal } from '../Modal';
 
-// Mock useFocusTrap to return a simple ref
-vi.mock('../../hooks/useFocusTrap', () => ({
-  useFocusTrap: () => ({ current: null }),
-}));
-
 // Mock Tooltip
 vi.mock('../Tooltip', () => ({
   Tooltip: ({ children }: { children: React.ReactNode }) =>
