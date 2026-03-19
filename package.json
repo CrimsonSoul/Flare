@@ -1,11 +1,11 @@
 {
-  "name": "relay",
-  "productName": "Relay",
+  "name": "flare",
+  "productName": "Flare",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "main": "dist/main/index.js",
-  "description": "Relay - Modern Data Dashboard",
+  "description": "Flare - IT Alert Composer",
   "author": "Relay Team",
   "license": "MIT",
   "scripts": {

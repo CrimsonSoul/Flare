@@ -10,14 +10,13 @@ const __dirname = dirname(__filename);
 import { validateEnv } from './env';
 import { state, getDataRoot, getBundledDataPath, setupIpc, setupPermissions } from './app/appState';
 import { setupMaintenanceTasks } from './app/maintenanceTasks';
-import { setupWindowListeners, ALLOWED_AUX_ROUTES } from './handlers/windowHandlers';
-import { isTrustedWebviewUrl } from './securityPolicy';
+import { setupWindowListeners } from './handlers/windowHandlers';
 
 // Ensure a consistent userData path for portable builds on Windows.
 // Without this, portable .exe instances launched from different locations
 // may resolve to different userData dirs and bypass the single-instance lock.
 if (process.platform === 'win32') {
-  const portableUserData = join(app.getPath('appData'), 'Relay');
+  const portableUserData = join(app.getPath('appData'), 'Flare');
   app.setPath('userData', portableUserData);
 }
 
@@ -53,21 +52,6 @@ if (gotLock) {
 
   loggers.main.info('Waiting for Electron ready...');
 
-  app.on('web-contents-created', (_event, contents) => {
-    if (contents.getType() !== 'webview') return;
-
-    contents.on('will-navigate', (event, url) => {
-      if (isTrustedWebviewUrl(url)) return;
-      loggers.security.warn(`Blocked webview navigation to non-allowlisted URL: ${url}`);
-      event.preventDefault();
-    });
-
-    contents.setWindowOpenHandler(({ url }) => {
-      loggers.security.warn(`Blocked webview window.open() attempt: ${url}`);
-      return { action: 'deny' };
-    });
-  });
-
   async function createWindow() {
     state.mainWindow = new BrowserWindow({
       width: 960,
@@ -84,8 +68,6 @@ if (gotLock) {
         contextIsolation: true,
         nodeIntegration: false,
         sandbox: true,
-        // L7: webviewTag is required for RadarTab functionality (embedded radar webviews)
-        webviewTag: true,
         webSecurity: true,
         allowRunningInsecureContent: false,
         experimentalFeatures: false,
@@ -122,10 +104,10 @@ if (gotLock) {
             "default-src 'self'; " +
               `script-src 'self' ${isDev ? "'unsafe-eval' 'unsafe-inline'" : "'sha256-Z2/iFzh9VMlVkEOar1f/oSHWwQk3ve1qk/C2WdsC4Xk='"}; ` +
               "style-src 'self' 'unsafe-inline'; " +
-              "img-src 'self' data: blob: https://api.weather.gov https://*.rainviewer.com; " +
-              "connect-src 'self' https://api.weather.gov https://geocoding-api.open-meteo.com https://api.open-meteo.com https://ipapi.co https://ipinfo.io https://ipwho.is https://*.rainviewer.com https://api.zippopotam.us; " +
+              "img-src 'self' data: blob:; " +
+              "connect-src 'self'; " +
               "font-src 'self' data:; " +
-              "frame-src 'self' https://www.rainviewer.com https://chatgpt.com https://claude.ai https://copilot.microsoft.com https://gemini.google.com; " +
+              "frame-src 'none'; " +
               "object-src 'none'; " +
               "base-uri 'self'; " +
               "form-action 'self';",
@@ -169,20 +151,6 @@ if (gotLock) {
         throw err;
       });
     }
-
-    state.mainWindow.webContents.on('will-attach-webview', (event, webPreferences, params) => {
-      delete webPreferences.preload;
-      webPreferences.nodeIntegration = false;
-      webPreferences.contextIsolation = true;
-      webPreferences.sandbox = true;
-      webPreferences.webSecurity = true;
-      webPreferences.allowRunningInsecureContent = false;
-
-      if (!isTrustedWebviewUrl(params.src)) {
-        loggers.security.warn(`Blocked WebView navigation to non-allowlisted URL: ${params.src}`);
-        event.preventDefault();
-      }
-    });
 
     // Prevent the main window from navigating away (H-1: navigation hijacking defense)
     const allowedFilePath = join(__dirname, '../renderer/');
@@ -259,67 +227,6 @@ if (gotLock) {
     });
   }
 
-  async function createAuxWindow(route: string) {
-    if (!ALLOWED_AUX_ROUTES.has(route)) {
-      loggers.security.warn(`Blocked aux window with invalid route: ${route}`);
-      return;
-    }
-    const auxWindow = new BrowserWindow({
-      width: 960,
-      height: 800,
-      backgroundColor: '#060608',
-      title: 'Relay - On-Call Board',
-      titleBarStyle: 'hidden',
-      trafficLightPosition: { x: 12, y: 12 },
-      webPreferences: {
-        preload: join(__dirname, '../preload/index.cjs'),
-        contextIsolation: true,
-        nodeIntegration: false,
-        sandbox: true,
-        webSecurity: true,
-      },
-    });
-
-    setupWindowListeners(auxWindow);
-
-    // Prevent aux window navigation hijacking
-    const auxAllowedFilePath = join(__dirname, '../renderer/');
-    auxWindow.webContents.on('will-navigate', (event, url) => {
-      if (
-        !app.isPackaged &&
-        process.env.ELECTRON_RENDERER_URL &&
-        url.startsWith(process.env.ELECTRON_RENDERER_URL)
-      )
-        return;
-      if (url.startsWith('file://')) {
-        const decodedUrl = decodeURIComponent(url.replace('file://', ''));
-        if (decodedUrl.startsWith(auxAllowedFilePath)) return;
-      }
-      loggers.security.warn(`Blocked aux window navigation to: ${url}`);
-      event.preventDefault();
-    });
-    auxWindow.webContents.setWindowOpenHandler(({ url }) => {
-      loggers.security.warn(`Blocked aux window.open() attempt: ${url}`);
-      return { action: 'deny' };
-    });
-
-    if (!app.isPackaged && process.env.ELECTRON_RENDERER_URL) {
-      const url = `${process.env.ELECTRON_RENDERER_URL}?popout=${route}`;
-      loggers.main.info(`Loading aux window URL: ${url}`);
-      await auxWindow.loadURL(url);
-    } else {
-      const indexPath = join(__dirname, '../renderer/index.html');
-      const url = `file://${indexPath}?popout=${route}`;
-      loggers.main.info(`Loading aux window file URL: ${url}`);
-      await auxWindow.loadURL(url);
-    }
-
-    // Emit current data to the new window
-    if (state.fileManager) {
-      await state.fileManager.readAndEmit();
-    }
-  }
-
   const bootstrap = async () => {
     try {
       if (!app.isReady()) {
@@ -329,10 +236,8 @@ if (gotLock) {
       loggers.main.info('Electron ready, performing setup...');
 
       setupPermissions(session.defaultSession);
-      setupPermissions(session.fromPartition('persist:weather'));
-      setupPermissions(session.fromPartition('persist:dispatcher-radar'));
 
-      setupIpc(createAuxWindow);
+      setupIpc();
       await createWindow();
       const cleanupMaintenance = setupMaintenanceTasks();
 
@@ -372,7 +277,7 @@ if (gotLock) {
   // Global Exception Handlers
   process.on('uncaughtException', (error) => {
     loggers.main.error('Uncaught Exception', { error: error.message, stack: error.stack });
-    dialog.showErrorBox('Startup Error', `Relay encountered a critical error:\n\n${error.message}`);
+    dialog.showErrorBox('Startup Error', `Flare encountered a critical error:\n\n${error.message}`);
     app.quit();
   });
 
