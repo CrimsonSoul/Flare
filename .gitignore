@@ -1,0 +1,56 @@
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDE files
+.idea
+.vscode
+.DS_Store
+
+# Build artifacts and temporary files
+dist
+dist-electron
+release
+tmp
+temp
+*.log
+.npm/
+
+# Test results and coverage
+test-results/
+coverage/
+playwright-report/
+
+# Static analysis working directories
+.scannerwork/
+coderabbit-reports/
+
+# Generated data files
+*.xlsx
+resources/*.xlsx
+data/*.json
+
+# Environment files (prevent accidental secret commits)
+.env*
+
+# Lock files (data locks, NOT package-lock.json)
+# package-lock.json is intentionally tracked for reproducible builds
+*.data.lock
+
+
+# Enigma Virtual Box
+.github/enigma/enigma-project.evb
+
+# Local Electron Binaries
+.electron/
+
+# Local git worktrees
+.worktrees/
+node_modules/
+dist/
+release/
+.electron/
+.superpowers/
+*.log
