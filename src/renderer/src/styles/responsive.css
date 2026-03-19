@@ -1,0 +1,200 @@
+/* Responsive Weather Tab */
+@media (max-width: 850px) {
+  .weather-tab-root {
+    flex-direction: column-reverse !important;
+    overflow-y: auto !important;
+    padding-bottom: 40px !important;
+    gap: 32px !important;
+  }
+
+  .weather-tab-root > div:last-child {
+    flex: none !important;
+    height: 450px !important;
+    min-height: 450px !important;
+    width: 100% !important;
+    z-index: 5;
+  }
+
+  .weather-forecast-column {
+    flex: none !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: auto !important;
+    overflow-y: visible !important;
+  }
+}
+
+@media (max-width: 980px) {
+  .app-header {
+    padding: 0 20px !important;
+  }
+
+  .platform-win32 .app-header {
+    padding-right: 156px !important;
+  }
+}
+
+/* Shared Responsive Grid */
+.relay-grid {
+  display: grid;
+  list-style: none;
+  margin: 0;
+  padding-left: 0;
+  grid-template-columns: repeat(auto-fill, minmax(var(--grid-min-col, 280px), 1fr));
+  gap: var(--grid-gap, 16px);
+  padding-bottom: var(--grid-pb, 0);
+  align-items: var(--grid-align, start);
+}
+
+.relay-grid-item {
+  height: 100%;
+}
+
+/* On-Call Board variant */
+.relay-grid--oncall {
+  --grid-min-col: 550px;
+  --grid-gap: 24px;
+  --grid-pb: 40px;
+  --grid-align: stretch;
+  justify-content: center;
+}
+
+/* Notes variant */
+.relay-grid--notes {
+  overflow-y: auto;
+  flex: 1;
+  padding: 8px;
+}
+
+.notes-masonry-columns {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.notes-masonry-column {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Wider gaps for large font mode (10ft viewing) */
+.relay-grid--notes[data-font-size='lg'] .notes-masonry-columns {
+  gap: 20px;
+}
+
+.relay-grid--notes[data-font-size='lg'] .notes-masonry-column {
+  gap: 20px;
+}
+
+/* Fixed 2-Column Grid for Pop-out (View Only) */
+.relay-grid--masonry {
+  --grid-gap: 24px;
+  --grid-pb: 40px;
+  --grid-align: stretch;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (max-width: 899px) {
+  .relay-grid--oncall {
+    --grid-min-col: 350px;
+    --grid-gap: 16px;
+  }
+  .relay-grid--masonry {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 599px) {
+  .relay-grid--oncall {
+    grid-template-columns: 1fr;
+    --grid-gap: 12px;
+  }
+
+  .notes-masonry-columns {
+    flex-direction: column;
+  }
+}
+
+/* Auto-hide sidebars earlier when content area gets cramped */
+@media (max-width: 1120px) {
+  .assembler-sidebar {
+    display: none;
+  }
+
+  .assembler-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-panel {
+    display: none;
+  }
+
+  .tab-split-layout {
+    display: block;
+  }
+}
+
+/* Keep tab header button rows usable on narrower widths */
+@media (max-width: 1280px) {
+  .collapsible-header {
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .collapsible-header-left {
+    min-width: 0;
+  }
+
+  .collapsible-header-right {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .collapsible-header-actions {
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .collapsible-header .list-toolbar {
+    width: auto;
+  }
+
+  .collapsible-header .tactile-button {
+    padding: 0 12px;
+  }
+}
+
+/* Accessibility Utilities */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* High Visibility Focus */
+:focus-visible {
+  outline: 3px solid rgba(245, 158, 11, 0.6) !important;
+  outline-offset: 3px !important;
+  border-radius: 8px !important;
+}
