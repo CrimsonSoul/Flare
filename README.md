@@ -12,6 +12,12 @@ Flare is an Electron desktop app for composing and tracking IT alerts — built 
 - Per-team company logo branding on alert cards
 - Full quality workflow: linting, type checking, tests, and CI release packaging
 
+## Preview
+
+<p align="center">
+  <img src="docs/screenshots/icon.png" width="180" alt="Flare icon" />
+</p>
+
 ## Core Features
 
 - **Alert Composer** — Build alert cards with title, severity, affected systems, and message body
