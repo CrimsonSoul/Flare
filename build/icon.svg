@@ -4,7 +4,7 @@
 
   <!-- Amber warning triangle with consistent rounded joins -->
   <path d="M256 88 L444 412 Q448 428 432 428 L80 428 Q64 428 68 412 Z"
-        fill="none" stroke="#f59e0b" stroke-width="28"
+        fill="#1a1200" stroke="#f59e0b" stroke-width="28"
         stroke-linejoin="round" stroke-linecap="round"/>
 
   <!-- Flame (replaces exclamation bar) -->
@@ -26,6 +26,9 @@
            C244 253 242 247 242 238
            C242 222 256 204 256 204Z"
         fill="#fde68a" opacity="0.85"/>
+
+  <!-- Stem connecting flame to dot -->
+  <rect x="242" y="291" width="28" height="68" rx="8" fill="#f59e0b"/>
 
   <!-- Dot (exclamation-style, at base of triangle) -->
   <circle cx="256" cy="382" r="18" fill="#f59e0b"/>
