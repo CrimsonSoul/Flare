@@ -256,8 +256,6 @@ input.tactile-input.tactile-input:focus {
   display: flex;
   height: 48px;
   -webkit-app-region: no-drag;
-  z-index: var(--z-window-controls);
-  position: relative;
   pointer-events: auto;
 }
 
@@ -6342,7 +6340,7 @@ body.modal-open {
 /* --- Email Card (forced light theme for PNG capture) --- */
 
 .alerts-email-card {
-  background: #ffffff;
+  background: var(--email-banner);
   width: 100%;
   max-width: 640px;
   border-radius: 10px;
@@ -6428,6 +6426,7 @@ body.modal-open {
   padding: 14px 36px 22px;
   border-bottom: 1px solid #eaeaea;
   text-align: center;
+  background: #ffffff;
 }
 
 .alerts-email-subject {

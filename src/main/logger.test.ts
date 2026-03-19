@@ -2,6 +2,16 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import fsPromises from 'node:fs/promises';
 import os from 'node:os';
 
+// Suppress console output produced by the logger under test
+beforeEach(() => {
+  vi.spyOn(console, 'log').mockImplementation(() => {});
+  vi.spyOn(console, 'warn').mockImplementation(() => {});
+  vi.spyOn(console, 'error').mockImplementation(() => {});
+});
+afterEach(() => {
+  vi.restoreAllMocks();
+});
+
 // Mock fs/promises before any imports
 vi.mock('node:fs/promises', () => ({
   default: {

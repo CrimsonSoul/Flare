@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { WindowControls } from '../WindowControls';
 
@@ -18,15 +18,17 @@ describe('WindowControls', () => {
     };
   });
 
-  it('renders minimize, maximize, and close buttons', () => {
+  it('renders minimize, maximize, and close buttons', async () => {
     render(<WindowControls />);
+    await act(async () => {});
     expect(screen.getByLabelText('Minimize')).toBeInTheDocument();
     expect(screen.getByLabelText('Maximize')).toBeInTheDocument();
     expect(screen.getByLabelText('Close')).toBeInTheDocument();
   });
 
-  it('calls windowMinimize when Minimize is clicked', () => {
+  it('calls windowMinimize when Minimize is clicked', async () => {
     render(<WindowControls />);
+    await act(async () => {});
     fireEvent.click(screen.getByLabelText('Minimize'));
     expect(
       (globalThis as unknown as { window: { api: { windowMinimize: ReturnType<typeof vi.fn> } } })
@@ -34,8 +36,9 @@ describe('WindowControls', () => {
     ).toHaveBeenCalled();
   });
 
-  it('calls windowMaximize when Maximize is clicked', () => {
+  it('calls windowMaximize when Maximize is clicked', async () => {
     render(<WindowControls />);
+    await act(async () => {});
     fireEvent.click(screen.getByLabelText('Maximize'));
     expect(
       (globalThis as unknown as { window: { api: { windowMaximize: ReturnType<typeof vi.fn> } } })
@@ -43,8 +46,9 @@ describe('WindowControls', () => {
     ).toHaveBeenCalled();
   });
 
-  it('calls windowClose when Close is clicked', () => {
+  it('calls windowClose when Close is clicked', async () => {
     render(<WindowControls />);
+    await act(async () => {});
     fireEvent.click(screen.getByLabelText('Close'));
     expect(
       (globalThis as unknown as { window: { api: { windowClose: ReturnType<typeof vi.fn> } } })
@@ -52,7 +56,7 @@ describe('WindowControls', () => {
     ).toHaveBeenCalled();
   });
 
-  it('returns null on darwin platform', () => {
+  it('returns null on darwin platform', async () => {
     (globalThis as unknown as Record<string, unknown>).window = {
       api: {
         isMaximized: vi.fn().mockResolvedValue(false),
@@ -64,6 +68,7 @@ describe('WindowControls', () => {
       },
     };
     const { container } = render(<WindowControls />);
+    await act(async () => {});
     expect(container.firstChild).toBeNull();
   });
 });

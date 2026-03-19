@@ -7,6 +7,13 @@ import {
   retryNetworkOperation,
 } from './retryUtils';
 
+vi.mock('./logger', () => ({
+  loggers: {
+    main: { warn: vi.fn(), error: vi.fn(), info: vi.fn(), debug: vi.fn() },
+    fileManager: { warn: vi.fn(), error: vi.fn(), info: vi.fn(), debug: vi.fn() },
+  },
+}));
+
 describe('retryUtils', () => {
   beforeEach(() => {
     vi.clearAllMocks();

@@ -9,7 +9,7 @@ export default function App() {
     <ToastProvider>
       <ErrorBoundary>
         <div className="app-container">
-          <div className="window-controls-container">
+          <div className="titlebar">
             <WindowControls />
           </div>
           <AlertsTab />
