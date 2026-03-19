@@ -7,26 +7,26 @@
         fill="#1a1200" stroke="#f59e0b" stroke-width="28"
         stroke-linejoin="round" stroke-linecap="round"/>
 
-  <!-- Exclamation bar (top, straight part) -->
-  <rect x="242" y="148" width="28" height="160" rx="14" fill="#f59e0b"/>
+  <!-- Exclamation bar (top, slightly shorter) -->
+  <rect x="242" y="148" width="28" height="130" rx="14" fill="#f59e0b"/>
 
-  <!-- Flame (bottom, replaces the dot) -->
-  <path d="M256 322
-           C256 322 288 358 288 382
-           C288 398 283 409 276 415
-           C276 392 263 378 256 369
-           C249 378 236 392 236 415
-           C229 409 224 398 224 382
-           C224 358 256 322 256 322Z"
+  <!-- Flame (flipped — tip points down, flares at top) -->
+  <path d="M256 415
+           C256 415 288 379 288 355
+           C288 339 283 328 276 322
+           C276 345 263 359 256 368
+           C249 359 236 345 236 322
+           C229 328 224 339 224 355
+           C224 379 256 415 256 415Z"
         fill="#f59e0b"/>
 
   <!-- Flame inner highlight -->
-  <path d="M256 346
-           C256 346 271 364 271 378
-           C271 387 269 393 265 397
-           C264 387 259 381 256 377
-           C253 381 248 387 247 397
-           C243 393 241 387 241 378
-           C241 364 256 346 256 346Z"
+  <path d="M256 391
+           C256 391 271 373 271 359
+           C271 350 269 344 265 340
+           C264 350 259 356 256 360
+           C253 356 248 350 247 340
+           C243 344 241 350 241 359
+           C241 373 256 391 256 391Z"
         fill="#fde68a" opacity="0.85"/>
 </svg>
