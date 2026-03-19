@@ -85,7 +85,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
-          name: relay-windows
+          name: flare-windows
           path: release/*.exe
 
   release:
@@ -107,7 +107,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v8
         with:
-          name: relay-windows
+          name: flare-windows
           path: release/
 
       - name: Create release
@@ -116,7 +116,7 @@ jobs:
           tag_name: ${{ steps.version.outputs.tag }}
           name: ${{ steps.version.outputs.name }}
           body: 'Automated release from workflow dispatch.'
-          files: release/Relay.exe
+          files: release/Flare.exe
           draft: true
           prerelease: false
         env:

@@ -96,5 +96,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
-          name: relay-windows
+          name: flare-windows
           path: release/*.exe
