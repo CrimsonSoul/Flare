@@ -15,7 +15,7 @@ Flare is an Electron desktop app for composing and tracking IT alerts — built 
 ## Preview
 
 <p align="center">
-  <img src="docs/screenshots/icon.png" width="180" alt="Flare icon" />
+  <img src="docs/screenshots/flare-icon.png" width="180" alt="Flare icon" />
 </p>
 
 ## Core Features
